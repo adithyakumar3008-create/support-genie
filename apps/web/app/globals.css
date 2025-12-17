@@ -1,26 +1,129 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
 }
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+::-webkit-scrollbar-track {
+    background: #050505;
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 2px;
 }
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+::-webkit-scrollbar-thumb:hover {
+    background: #00f0ff;
+}
+.glass-panel {
+    background: rgba(10, 10, 10, 0.65);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+.holographic-text {
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 5px rgba(0, 240, 255, 0.5), 0 0 10px rgba(0, 240, 255, 0.3);
+}
+.scanline-overlay {
+    background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
+    background-size: 100% 4px;
+    pointer-events: none;
+}
+.btn-glitch {
+    position: relative;
+    overflow: hidden;
+}
+.btn-glitch::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.2), transparent);
+    transition: 0.5s;
+}
+.btn-glitch:hover::before {
+    left: 100%;
+}
+@keyframes pulse-node {
+    0% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(0, 240, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); }
+}
+.node-active {
+    animation: pulse-node 2s infinite;
+}
+.grid-bg {
+    background-image:
+        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+.msg-container {
+    border-left: 2px solid;
+    position: relative;
+}
+.msg-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, currentColor 0%, transparent 100%);
+    opacity: 0.05;
+}
+.char-reveal {
+    display: inline-block;
+    opacity: 0;
+    animation: resolveChar 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    backface-visibility: hidden;
+    will-change: opacity, transform, filter;
+}
+.char-reveal:nth-child(1) { animation-delay: 0.05s; }
+.char-reveal:nth-child(2) { animation-delay: 0.08s; }
+.char-reveal:nth-child(3) { animation-delay: 0.11s; }
+.char-reveal:nth-child(4) { animation-delay: 0.14s; }
+.char-reveal:nth-child(5) { animation-delay: 0.17s; }
+.char-reveal:nth-child(6) { animation-delay: 0.20s; }
+.char-reveal:nth-child(7) { animation-delay: 0.23s; }
+.char-reveal:nth-child(8) { animation-delay: 0.26s; }
+.char-reveal:nth-child(9) { animation-delay: 0.29s; }
+.char-reveal:nth-child(10) { animation-delay: 0.32s; }
+.char-reveal:nth-child(11) { animation-delay: 0.35s; }
+.char-reveal:nth-child(12) { animation-delay: 0.38s; }
+.char-reveal:nth-child(13) { animation-delay: 0.41s; }
+.char-reveal:nth-child(14) { animation-delay: 0.44s; }
+.char-reveal:nth-child(15) { animation-delay: 0.47s; }
+.deep-think-gradient {
+    background: linear-gradient(to top, #0a0a0a 10%, rgba(10,10,10,0.8) 30%, transparent 100%);
+}
+.electric-text {
+    background: linear-gradient(90deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0.8) 100%);
+    background-size: 200% auto;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: electricTrace 3s ease-in-out infinite;
+}
+@keyframes nodeGrow {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+}
+.brain-node-pulse {
+    animation: nodeGrow 2s ease-in-out infinite;
+    transform-origin: center;
+}
+@keyframes tendrilFlow {
+    0% { stroke-dashoffset: 1000; opacity: 0.4; }
+    100% { stroke-dashoffset: 0; opacity: 1; }
+}
+.tendril-path {
+    stroke-dasharray: 1000;
+    animation: tendrilFlow 3s linear infinite;
+}
+.clip-path-hexagon {
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
 }
