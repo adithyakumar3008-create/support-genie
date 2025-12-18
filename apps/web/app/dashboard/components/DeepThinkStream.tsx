@@ -23,8 +23,12 @@ export const DeepThinkStream = ({ events }: { events: AgentEvent[] }) => {
         const latestLangEvent = [...events].reverse().find(event => event.type === 'language');
         if (latestLangEvent && latestLangEvent.id !== langEvent?.id) {
             setLangEvent(latestLangEvent);
+            const timer = setTimeout(() => {
+                setLangEvent(null);
+            }, 5000); // Duration of the toast animation
+            return () => clearTimeout(timer);
         }
-    }, [events, langEvent]);
+    }, [events, langEvent?.id]);
 
     const thoughtEvents = events.filter(event => event.type === 'thought');
 

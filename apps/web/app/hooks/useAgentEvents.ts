@@ -1,14 +1,55 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../utils/supabase'
 
-export type AgentEvent = {
-    id: string
-    agent_name: string
-    step_name: string
-    thought_content: string
-    status: string
-    created_at: string
+// Base properties common to all events
+export interface BaseAgentEvent {
+    id: string;
+    created_at: string;
 }
+
+// Session Event
+export interface SessionEvent extends BaseAgentEvent {
+    type: 'session';
+    data: {
+        session_id: string;
+        tier: string;
+        language: string;
+        state: string;
+        latency: number;
+    };
+}
+
+// Language Event
+export interface LanguageEvent extends BaseAgentEvent {
+    type: 'language';
+    data: {
+        language_detected: string;
+        confidence_score: number;
+    };
+}
+
+// Metrics Event
+export interface MetricsEvent extends BaseAgentEvent {
+    type: 'metrics';
+    data: {
+        neural_load: number;
+        confidence: number;
+        latency_ms: number;
+    };
+}
+
+// Thought Event
+export interface ThoughtEvent extends BaseAgentEvent {
+    type: 'thought';
+    agent_name: string;
+    step_name: string;
+    thought_content: string;
+    status: string;
+}
+
+// Discriminated Union Type for all possible agent events
+export type AgentEvent = SessionEvent | LanguageEvent | MetricsEvent | ThoughtEvent;
+
 
 export function useAgentEvents() {
     const [events, setEvents] = useState<AgentEvent[]>([])
@@ -22,7 +63,7 @@ export function useAgentEvents() {
                 .order('created_at', { ascending: false })
                 .limit(50)
 
-            if (data) setEvents(data.reverse())
+            if (data) setEvents(data.reverse() as AgentEvent[])
         }
 
         fetchEvents()

@@ -1,5 +1,12 @@
 // apps/web/app/dashboard/components/NeuralNetworkGraph.tsx
-export const NeuralNetworkGraph = () => {
+import { AgentEvent } from "@/app/hooks/useAgentEvents";
+
+export const NeuralNetworkGraph = ({ events }: { events: AgentEvent[] }) => {
+    const latestThought = [...events].reverse().find(e => e.type === 'thought');
+    const latestMetrics = [...events].reverse().find(e => e.type === 'metrics');
+
+    const animationDuration = latestMetrics ? Math.max(0.5, 5 - latestMetrics.data.neural_load / 20) : 3;
+
     return (
         <div className="glass-panel rounded-none p-1 min-h-[300px] relative group overflow-hidden border border-primary/30 shadow-[0_0_40px_rgba(0,240,255,0.1)]">
             <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-primary z-20"></div>
@@ -30,7 +37,7 @@ export const NeuralNetworkGraph = () => {
                     </defs>
                     <path d="M 100 200 L 300 150 L 500 220" fill="none" stroke="#1a1a1a" strokeWidth="1"></path>
                     <path d="M 300 150 L 400 80" fill="none" stroke="#1a1a1a" strokeWidth="1"></path>
-                    <path className="tendril-path" d="M 100 200 Q 200 175 300 150 T 500 220" fill="none" stroke="url(#stream-gradient)" strokeWidth="2"></path>
+                    <path className="tendril-path" d="M 100 200 Q 200 175 300 150 T 500 220" fill="none" stroke="url(#stream-gradient)" strokeWidth="2" style={{ animationDuration: `${animationDuration}s` }}></path>
                     <circle className="brain-node-pulse" cx="100" cy="200" fill="#00f0ff" filter="url(#glow)" r="4"></circle>
                     <circle className="brain-node-pulse" cx="300" cy="150" fill="#7000ff" filter="url(#glow)" r="6" style={{animationDelay: '0.5s'}}></circle>
                     <circle className="brain-node-pulse" cx="500" cy="220" fill="#00ff9d" filter="url(#glow)" r="4" style={{animationDelay: '1s'}}></circle>
@@ -39,14 +46,8 @@ export const NeuralNetworkGraph = () => {
                     <div className="flex flex-col gap-1 backdrop-blur-sm bg-black/40 p-2 rounded border border-white/5 w-2/3 h-16 relative overflow-hidden">
                         <span className="text-[10px] text-primary font-mono font-bold tracking-wider">CURRENT FOCUS THREAD</span>
                         <div className="relative w-full h-full">
-                            <p className="absolute inset-0 text-white text-sm font-medium leading-tight font-mono holographic-text animate-text-cycle" style={{animationDelay: '0s'}}>
-                                "Routing via Language Matrix..."
-                            </p>
-                            <p className="absolute inset-0 text-white text-sm font-medium leading-tight font-mono holographic-text animate-text-cycle opacity-0" style={{animationDelay: '3s'}}>
-                                "Resolving financial anomaly..."
-                            </p>
-                            <p className="absolute inset-0 text-white text-sm font-medium leading-tight font-mono holographic-text animate-text-cycle opacity-0" style={{animationDelay: '6s'}}>
-                                "Executing refund protocol..."
+                            <p className="absolute inset-0 text-white text-sm font-medium leading-tight font-mono holographic-text">
+                                {latestThought && latestThought.type === 'thought' ? `"${latestThought.thought_content}"` : "Awaiting thought stream..."}
                             </p>
                         </div>
                     </div>
