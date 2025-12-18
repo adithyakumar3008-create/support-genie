@@ -1,5 +1,5 @@
 // apps/web/app/dashboard/components/ActiveNeuralThreads.tsx
-import { AgentEvent } from "@/app/hooks/useAgentEvents"
+import { AgentEvent, SessionEvent } from "@/app/hooks/useAgentEvents"
 
 // Helper to get language details
 const getLanguageDetails = (lang: string) => {
@@ -25,13 +25,11 @@ const getStateDetails = (state: string) => {
     }
 };
 
-export const ActiveNeuralThreads = ({ events }: { events: AgentEvent[] }) => {
+export const ActiveNeuralThreads = ({ events }: { events: SessionEvent[] }) => {
     // Get the latest event for each session
-    const latestEvents = new Map<string, AgentEvent>();
+    const latestEvents = new Map<string, SessionEvent>();
     events.forEach(event => {
-        if (event.type === 'session') {
-            latestEvents.set(event.data.session_id, event);
-        }
+        latestEvents.set(event.data.session_id, event);
     });
     const threads = Array.from(latestEvents.values());
 
